@@ -1,0 +1,362 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #08080b;
+  --color-ink-raised: #101015;
+  --color-surface: #14141b;
+  --color-surface-2: #191922;
+  --color-line: rgba(255, 255, 255, 0.09);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
+  --color-fg: #fafafc;
+  --color-muted: #a1a1aa;
+  --color-muted-dim: #8f8f99;
+  --color-brand: #7c3aed;
+  --color-brand-strong: #9333ea;
+  --color-brand-bright: #a855f7;
+  --color-brand-light: #c4a2fb;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-2xl: 40px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(124, 58, 237, 0.4);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-bright);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@utility shell {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 768px) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility text-balance-tight {
+  text-wrap: balance;
+}
+
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted-dim);
+
+  &::before {
+    content: "";
+    width: 1.5rem;
+    height: 1px;
+    background: var(--color-brand-bright);
+    opacity: 0.7;
+  }
+}
+
+/* ---------- Brand primitives ---------- */
+
+.onze-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+.onze-glow {
+  background:
+    radial-gradient(60% 55% at 50% 0%, rgba(124, 58, 237, 0.28) 0%, transparent 70%),
+    radial-gradient(35% 35% at 85% 20%, rgba(168, 85, 247, 0.14) 0%, transparent 70%);
+}
+
+.onze-hairline {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.16) 20%,
+    rgba(255, 255, 255, 0.16) 80%,
+    transparent
+  );
+}
+
+.onze-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ---------- Entrance animation ---------- */
+
+@keyframes onze-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes onze-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes onze-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes onze-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+
+@keyframes onze-draw {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.anim-rise {
+  animation: onze-rise 0.9s var(--ease-out-soft) both;
+}
+
+.anim-fade {
+  animation: onze-fade 1.2s var(--ease-out-soft) both;
+}
+
+.anim-pulse {
+  animation: onze-pulse 2.6s ease-in-out infinite;
+}
+
+.anim-sweep {
+  animation: onze-sweep 5.5s ease-in-out infinite;
+}
+
+.anim-draw {
+  stroke-dasharray: 1000;
+  animation: onze-draw 2.6s var(--ease-out-soft) 0.4s both;
+}
+
+/* Scroll reveal (progressive enhancement, JS sets data-visible) */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.8s var(--ease-out-soft),
+    transform 0.8s var(--ease-out-soft);
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .anim-sweep,
+  .anim-draw,
+  .anim-pulse {
+    animation: none;
+  }
+}
+
+/* ---------- Motion: fluxo, logo e parallax ---------- */
+
+@keyframes onze-flow {
+  to {
+    stroke-dashoffset: -96;
+  }
+}
+
+@keyframes onze-node {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  12%,
+  32% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+  55% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+}
+
+@keyframes onze-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes onze-core {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes onze-shine {
+  0%,
+  65% {
+    transform: translateX(-140%) rotate(18deg);
+  }
+  100% {
+    transform: translateX(240%) rotate(18deg);
+  }
+}
+
+/* Pacotes percorrendo o ciclo: dash curto sobre trilha longa */
+.anim-flow {
+  stroke-dasharray: 3 45;
+  animation: onze-flow 3.6s linear infinite;
+}
+
+/* Nós do ciclo acendem em sequência */
+.anim-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: onze-node 6.4s ease-in-out infinite;
+}
+
+.logo-mark .logo-orbit,
+.logo-mark .logo-core,
+.logo-mark .logo-shine {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.logo-mark .logo-orbit {
+  animation: onze-orbit 18s linear infinite;
+}
+
+.logo-mark .logo-core {
+  animation: onze-core 3.6s ease-in-out infinite;
+}
+
+.logo-mark .logo-shine {
+  animation: onze-shine 6.5s ease-in-out infinite;
+}
+
+/* Parallax: o hook escreve --parallax-y; translate não briga com transform */
+@utility parallax-layer {
+  translate: 0 var(--parallax-y, 0px);
+  will-change: translate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-flow,
+  .anim-node,
+  .logo-mark .logo-orbit,
+  .logo-mark .logo-core,
+  .logo-mark .logo-shine {
+    animation: none;
+  }
+
+  .parallax-layer {
+    translate: none;
+    will-change: auto;
+  }
+}
