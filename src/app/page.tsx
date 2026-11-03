@@ -11,7 +11,7 @@ import { FaqSection } from "@/components/faq-section";
 import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
-  title: "ONZE — Tráfego pago com estratégia e direção",
+  title: "ONZE | Tráfego Pago Estratégico",
   description:
     "Agência de tráfego pago e performance: estratégia, mídia e análise de dados para transformar investimento em oportunidades reais de negócio.",
 };

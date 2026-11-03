@@ -4,7 +4,7 @@ const url = process.env.AUDIT_URL || "http://localhost:3000/";
 const browser = await chromium.launch();
 const problems = [];
 
-// ---------- 1) Movimento normal ----------
+// ---------- 1) Constelacao: estrutura e particulas ----------
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await ctx.newPage();
 const consoleErrors = [];
@@ -15,45 +15,43 @@ page.on("pageerror", (e) => consoleErrors.push(`pageerror: ${e.message}`));
 
 await page.goto(url, { waitUntil: "networkidle" });
 
-const animations = await page.evaluate(() => {
-  const read = (selector) => {
-    const el = document.querySelector(selector);
-    if (!el) return { selector, found: false };
-    const cs = getComputedStyle(el);
-    return {
-      selector,
-      found: true,
-      name: cs.animationName,
-      duration: cs.animationDuration,
-      iteration: cs.animationIterationCount,
-    };
-  };
+const structure = await page.evaluate(() => {
+  const svg = document.querySelector('svg[aria-label*="Constelacao"]');
+  if (!svg) return { found: false };
   return {
-    items: [
-      read(".logo-orbit"),
-      read(".logo-core"),
-      read(".logo-shine"),
-      read(".anim-flow"),
-      read(".anim-node"),
-    ],
-    parallaxLayers: document.querySelectorAll(".parallax-layer").length,
+    found: true,
+    nodes: svg.querySelectorAll('[role="button"]').length,
+    paths: svg.querySelectorAll("path.field-path").length,
+    particles: svg.querySelectorAll("animateMotion").length,
+    orbitalRings: svg.querySelectorAll(".orbital-ring").length,
+    ariaLabel: svg.getAttribute("aria-label"),
   };
 });
 
-for (const item of animations.items) {
-  if (!item.found) {
-    problems.push(`animacao ausente do DOM: ${item.selector}`);
-    continue;
-  }
-  if (item.name === "none") problems.push(`sem animacao: ${item.selector}`);
+if (!structure.found) {
+  problems.push("constelacao: SVG nao encontrado no DOM");
+} else {
+  if (structure.nodes < 6) problems.push(`constelacao: ${structure.nodes} nos (esperado >= 6)`);
+  if (structure.paths < 8) problems.push(`constelacao: ${structure.paths} caminhos (esperado >= 8)`);
+  if (structure.particles < 8) problems.push(`constelacao: ${structure.particles} particulas (esperado >= 8)`);
+  if (structure.orbitalRings < 1) problems.push(`constelacao: sem aneis orbitais`);
 }
 
-// ---------- 2) Parallax realmente varia com o scroll ----------
+// ---------- 2) Anel orbital tem animacao ----------
+const orbital = await page.evaluate(() => {
+  const el = document.querySelector(".orbital-ring");
+  if (!el) return { found: false };
+  return { found: true, name: getComputedStyle(el).animationName };
+});
+if (orbital.found && orbital.name === "none")
+  problems.push("sem animacao: .orbital-ring");
+
+// ---------- 3) Parallax varia com scroll ----------
 const readParallax = () =>
   page.evaluate(() =>
     [...document.querySelectorAll(".parallax-layer")].map(
-      (el) => el.style.getPropertyValue("--parallax-y") || "0px",
-    ),
+      (el) => el.style.getPropertyValue("--parallax-y") || "0px"
+    )
   );
 
 const before = await readParallax();
@@ -61,70 +59,44 @@ await page.evaluate(() => window.scrollTo(0, 400));
 await page.waitForTimeout(350);
 const after = await readParallax();
 
-const moved = before.some((v, i) => v !== after[i]);
-if (!moved) problems.push(`parallax nao reagiu ao scroll (antes ${before} / depois ${after})`);
+if (!before.some((v, i) => v !== after[i]))
+  problems.push("parallax: nenhum deslocamento apos scroll");
 
-// ---------- 3) Diagrama do hero presente e acessivel ----------
-const diagram = await page.evaluate(() => {
-  const svg = document.querySelector('svg[aria-label*="ciclo de tráfego pago"]');
-  if (!svg) return { found: false };
-  const box = svg.getBoundingClientRect();
-  return {
-    found: true,
-    label: svg.getAttribute("aria-label").slice(0, 50),
-    width: Math.round(box.width),
-    height: Math.round(box.height),
-    nodes: svg.querySelectorAll(".anim-node").length,
-  };
-});
-if (!diagram.found) problems.push("diagrama do hero nao encontrado");
-else if (diagram.width === 0 || diagram.height === 0) problems.push("diagrama sem dimensao visivel");
-if (diagram.found && diagram.nodes !== 4) problems.push(`diagrama com ${diagram.nodes} nos (esperado 4)`);
-
-// ---------- 4) Logo animada apenas onde pedido ----------
-const logoMarks = await page.evaluate(() => {
-  const marks = [...document.querySelectorAll("svg")].filter((s) =>
-    s.querySelector(".logo-core, .logo-orbit"),
-  );
-  return marks.length;
-});
-
-await page.screenshot({ path: ".audit/hero-motion.png" });
-
-// ---------- 5) reduced-motion desliga tudo ----------
-const rmCtx = await browser.newContext({
-  viewport: { width: 1440, height: 900 },
-  reducedMotion: "reduce",
-});
+// ---------- 4) reduced-motion ----------
+const rmCtx = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: "reduce" });
 const rmPage = await rmCtx.newPage();
 await rmPage.goto(url, { waitUntil: "networkidle" });
+
 const reduced = await rmPage.evaluate(() => {
-  const el = document.querySelector(".logo-orbit");
-  const flow = document.querySelector(".anim-flow");
+  const orbital = document.querySelector(".orbital-ring");
+  const fieldPath = document.querySelector(".field-path");
   const layer = document.querySelector(".parallax-layer");
   return {
-    logoOrbit: el ? getComputedStyle(el).animationName : "ausente",
-    flow: flow ? getComputedStyle(flow).animationName : "ausente",
-    parallaxTranslate: layer ? getComputedStyle(layer).translate : "ausente",
+    orbital: orbital ? getComputedStyle(orbital).animationName : "ausente",
+    fieldPath: fieldPath ? getComputedStyle(fieldPath).animationName : "ausente",
+    parallax: layer ? getComputedStyle(layer).translate : "ausente",
   };
 });
 
-if (reduced.logoOrbit !== "none" && reduced.logoOrbit !== "ausente")
-  problems.push(`reduced-motion: logo ainda anima (${reduced.logoOrbit})`);
-if (reduced.flow !== "none" && reduced.flow !== "ausente")
-  problems.push(`reduced-motion: fluxo ainda anima (${reduced.flow})`);
-if (reduced.parallaxTranslate !== "none" && reduced.parallaxTranslate !== "ausente")
-  problems.push(`reduced-motion: parallax ainda desloca (${reduced.parallaxTranslate})`);
+if (reduced.orbital !== "none" && reduced.orbital !== "ausente")
+  problems.push(`reduced-motion: orbital ainda anima (${reduced.orbital})`);
+if (reduced.fieldPath !== "none" && reduced.fieldPath !== "ausente")
+  problems.push(`reduced-motion: campo ainda anima (${reduced.fieldPath})`);
+if (reduced.parallax !== "none" && reduced.parallax !== "ausente")
+  problems.push(`reduced-motion: parallax ainda desloca (${reduced.parallax})`);
 
-// ---------- 6) Layout nao quebra com o parallax ----------
-const overflow = await rmPage.evaluate(() => {
-  return document.documentElement.scrollWidth - document.documentElement.clientWidth;
-});
+// ---------- 5) Sem overflow ----------
+const overflow = await rmPage.evaluate(() =>
+  document.documentElement.scrollWidth - document.documentElement.clientWidth
+);
 if (overflow > 2) problems.push(`overflow horizontal: ${overflow}px`);
 
-if (consoleErrors.length) problems.push(`console: ${consoleErrors.slice(0, 3).join(" | ")}`);
+if (consoleErrors.length)
+  problems.push(`console: ${consoleErrors.slice(0, 3).join(" | ")}`);
 
-console.log(JSON.stringify({ animations, before, after, diagram, logoMarks, reduced, overflow }, null, 2));
+// ---------- 6) Output ----------
+const debug = { structure, orbital, before, after, reduced };
+console.log(JSON.stringify(debug, null, 2));
 console.log("\n=== RESUMO ===");
 console.log(problems.length ? problems.join("\n") : "Nenhum problema encontrado");
 

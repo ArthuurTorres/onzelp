@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowDown, ArrowUpRight } from "@/components/icons";
-import { FlowDiagram } from "@/components/flow-diagram";
+import { AcquisitionField } from "@/components/acquisition-field";
 import { Parallax } from "@/components/parallax";
 import { track } from "@/lib/analytics";
 
@@ -29,7 +29,7 @@ export function Hero() {
       </div>
 
       <div className="shell">
-        <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+        <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-10 xl:gap-14">
           <div>
             <p className="anim-fade inline-flex items-center gap-2.5 rounded-full border border-line bg-white/[0.03] py-1.5 pr-4 pl-1.5 text-[0.6875rem] font-medium tracking-[0.1em] text-muted uppercase">
               <span className="rounded-full bg-brand/20 px-2.5 py-1 text-[0.625rem] text-brand-light">
@@ -40,7 +40,7 @@ export function Hero() {
 
             <h1
               id="hero-title"
-              className="anim-rise mt-6 font-display text-[clamp(2.5rem,6.4vw,4.75rem)] leading-[0.98] font-semibold tracking-[-0.045em] text-fg"
+              className="anim-rise mt-6 font-display text-[clamp(2rem,5vw,3.5rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-fg"
               style={{ animationDelay: "80ms" }}
             >
               Tráfego pago com
@@ -95,9 +95,9 @@ export function Hero() {
             </ul>
           </div>
 
-          <div className="anim-fade lg:pl-2" style={{ animationDelay: "200ms" }}>
-            <Parallax distance={-26}>
-              <FlowDiagram />
+          <div className="anim-fade" style={{ animationDelay: "200ms" }}>
+            <Parallax distance={-22}>
+              <AcquisitionField />
             </Parallax>
           </div>
         </div>

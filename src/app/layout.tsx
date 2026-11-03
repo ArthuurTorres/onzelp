@@ -17,8 +17,9 @@ const sora = Sora({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   title: {
-    default: "ONZE — Tráfego pago com estratégia e direção",
+    default: "ONZE | Tráfego Pago Estratégico",
     template: "%s | ONZE",
   },
   description: siteConfig.description,
@@ -37,12 +38,12 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: "/",
     siteName: siteConfig.name,
-    title: "ONZE — Tráfego pago com estratégia e direção",
+    title: "ONZE | Tráfego Pago Estratégico",
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "ONZE — Tráfego pago com estratégia e direção",
+    title: "ONZE | Tráfego Pago Estratégico",
     description: siteConfig.description,
   },
   robots: { index: true, follow: true },

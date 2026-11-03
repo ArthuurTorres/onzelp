@@ -24,8 +24,8 @@ export function Results() {
               </p>
 
               <ul className="mt-9 space-y-px overflow-hidden rounded-xl border border-line bg-line">
-                {resultMetrics.map((metric) => (
-                  <li key={metric.label} className="bg-ink px-5 py-4">
+                {resultMetrics.map((metric, index) => (
+                  <li key={metric.label} className="group bg-ink px-5 py-4">
                     <div className="flex items-baseline justify-between gap-4">
                       <span className="text-[0.8125rem] font-medium text-fg">
                         {metric.label}
@@ -35,6 +35,13 @@ export function Results() {
                     <p className="mt-1 text-[0.75rem] leading-relaxed text-muted">
                       {metric.description}
                     </p>
+                    <div className="mt-3 h-px w-full overflow-hidden rounded-full bg-line">
+                      <span
+                        aria-hidden="true"
+                        className="metric-bar block h-full rounded-full bg-gradient-to-r from-brand/60 to-brand-bright/80"
+                        style={{ animationDelay: `${index * 160}ms` }}
+                      />
+                    </div>
                   </li>
                 ))}
               </ul>

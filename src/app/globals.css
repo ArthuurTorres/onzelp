@@ -340,6 +340,131 @@
   animation: onze-shine 6.5s ease-in-out infinite;
 }
 
+/* Rede tecnológica do hero: sinais, nós e órbitas da marca */
+@keyframes onze-network-trace {
+  0% { stroke-dashoffset: 72; opacity: 0; }
+  12% { opacity: 0.95; }
+  68% { opacity: 0.8; }
+  100% { stroke-dashoffset: -72; opacity: 0; }
+}
+
+@keyframes onze-node-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.8); }
+  45% { opacity: 1; transform: scale(1.25); }
+  60% { opacity: 0.7; transform: scale(1); }
+}
+
+@keyframes onze-node-halo {
+  0%, 100% { opacity: 0.08; transform: scale(0.65); }
+  45% { opacity: 0.34; transform: scale(1.2); }
+  70% { opacity: 0.12; transform: scale(0.9); }
+}
+
+@keyframes onze-orbit-ring {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes onze-orbit-ring-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.network-trace {
+  stroke-dashoffset: 72;
+  animation: onze-network-trace 3.5s ease-in-out infinite;
+}
+
+.node-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: onze-node-pulse 3.8s ease-in-out infinite;
+}
+
+.node-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: onze-node-halo 3.8s ease-in-out infinite;
+}
+
+.orbital-ring {
+  animation: onze-orbit-ring 13s linear infinite;
+}
+
+.orbital-ring-2 {
+  animation: onze-orbit-ring-reverse 21s linear infinite;
+}
+
+/* Campo de aquisição: caminhos e partículas */
+.field-path {
+  transition: stroke-dasharray 0.4s, opacity 0.4s, stroke-width 0.4s;
+}
+
+.field-path.active-path {
+  stroke-dasharray: 6 6;
+  opacity: 0.7;
+  animation: onze-field-pulse 2s ease-in-out infinite;
+}
+
+.core-glow {
+  animation: onze-core-glow 4s ease-in-out infinite;
+}
+
+.deco-point {
+  animation: onze-deco-blink 5s ease-in-out infinite;
+}
+
+@keyframes onze-field-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes onze-core-glow {
+  0%, 100% { opacity: 0.45; r: 110; }
+  50% { opacity: 0.7; r: 130; }
+}
+
+}
+
+/* Barra de métrica — cresce quando a seção fica visível */
+.metric-bar {
+  width: 0;
+  animation: onze-metric-grow 1.4s var(--ease-out-soft) forwards;
+}
+
+.reveal[data-visible="false"] .metric-bar {
+  animation-play-state: paused;
+}
+
+@keyframes onze-metric-grow {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Ciclo de aquisição — positioning */
+.journey-path {
+  animation: onze-journey-rotate 18s linear infinite;
+}
+.journey-orbit {
+  animation: onze-journey-orbit 12s linear infinite reverse;
+}
+.journey-dot {
+  animation: onze-journey-dot-pulse 3s ease-in-out infinite;
+}
+
+@keyframes onze-journey-rotate {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 220; }
+}
+@keyframes onze-journey-orbit {
+  from { transform: rotate(0deg); transform-origin: 120px 120px; }
+  to { transform: rotate(360deg); transform-origin: 120px 120px; }
+}
+@keyframes onze-journey-dot-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
 /* Parallax: o hook escreve --parallax-y; translate não briga com transform */
 @utility parallax-layer {
   translate: 0 var(--parallax-y, 0px);
@@ -349,6 +474,18 @@
 @media (prefers-reduced-motion: reduce) {
   .anim-flow,
   .anim-node,
+  .network-trace,
+  .field-path,
+  .node-dot,
+  .node-halo,
+  .node-halo-bg,
+  .orbital-ring,
+  .orbital-ring-2,
+  .core-glow,
+  .deco-point,
+  .journey-path,
+  .journey-orbit,
+  .journey-dot {
   .logo-mark .logo-orbit,
   .logo-mark .logo-core,
   .logo-mark .logo-shine {
@@ -358,5 +495,10 @@
   .parallax-layer {
     translate: none;
     will-change: auto;
+  }
+
+  .metric-bar {
+    width: 100%;
+    animation: none;
   }
 }

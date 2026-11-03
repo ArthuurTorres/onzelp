@@ -52,6 +52,77 @@ export function Positioning() {
                   próxima decisão que aumenta a chance de venda?
                 </p>
               </div>
+
+              {/* Ciclo de aquisição — visual decorativo */}
+              <div aria-hidden="true" className="mt-8 hidden lg:block">
+                <svg viewBox="0 0 240 240" className="w-full max-w-[240px]" role="presentation">
+                  <defs>
+                    <radialGradient id="journey-glow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#a855f7" stopOpacity="0.22" />
+                      <stop offset="100%" stopColor="#a855f7" stopOpacity="0" />
+                    </radialGradient>
+                    <linearGradient id="journey-core" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#a855f7" />
+                      <stop offset="100%" stopColor="#5b21b6" />
+                    </linearGradient>
+                  </defs>
+
+                  <circle cx="120" cy="120" r="104" fill="url(#journey-glow)" />
+                  <circle
+                    cx="120"
+                    cy="120"
+                    r="88"
+                    fill="none"
+                    stroke="#a855f7"
+                    strokeWidth="1"
+                    strokeDasharray="4 9"
+                    opacity="0.35"
+                    className="journey-path"
+                  />
+                  <ellipse
+                    cx="120"
+                    cy="120"
+                    rx="88"
+                    ry="30"
+                    fill="none"
+                    stroke="#c4a2fb"
+                    strokeWidth="0.8"
+                    strokeDasharray="3 7"
+                    opacity="0.4"
+                    className="journey-orbit"
+                  />
+
+                  <circle cx="120" cy="120" r="22" fill="#a855f7" opacity="0.12" />
+                  <rect
+                    x="108"
+                    y="104"
+                    width="24"
+                    height="33"
+                    rx="12"
+                    fill="url(#journey-core)"
+                  />
+                  <rect x="115" y="109" width="10" height="23" rx="5" fill="#08080b" />
+                  <circle cx="120" cy="120.5" r="3" fill="#a855f7" />
+
+                  <circle cx="120" cy="32" r="7" fill="#a855f7" opacity="0.85" className="journey-dot" />
+                  <circle cx="208" cy="120" r="7" fill="#6366f1" opacity="0.85" className="journey-dot" />
+                  <circle cx="120" cy="208" r="7" fill="#06b6d4" opacity="0.85" className="journey-dot" />
+                  <circle cx="32" cy="120" r="7" fill="#f59e0b" opacity="0.85" className="journey-dot" />
+
+                  <text x="120" y="20" textAnchor="middle" fill="#a855f7" fontSize="8.5" opacity="0.75">
+                    Orçamento
+                  </text>
+                  <text x="214" y="123" textAnchor="start" fill="#6366f1" fontSize="8.5" opacity="0.75">
+                    Canal
+                  </text>
+                  <text x="120" y="226" textAnchor="middle" fill="#06b6d4" fontSize="8.5" opacity="0.75">
+                    Dados
+                  </text>
+                  <text x="26" y="123" textAnchor="end" fill="#f59e0b" fontSize="8.5" opacity="0.75">
+                    Decisão
+                  </text>
+                </svg>
+              </div>
             </div>
           </Reveal>
 
